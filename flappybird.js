@@ -1,3 +1,43 @@
+//配置信息
+var config={
+    'container':{//游戏所放的位置的元素名称
+        'id':'flappybird',//元素id
+        'width':600,//宽度
+        'height':600//高度
+    },
+    'canvas':{//画布
+        'top':0,//顶部坐标
+        'bottom':600,//底部坐标
+        'background_image':'',//背景图
+        'resource':''//资源图片
+    },
+    'world':{
+        'g':9.8,//加速度
+    },
+    'bird':{//鸟
+        'speed':80,
+        'dropspeed':0,
+        'origin_pos':[200,300],
+        'area':[[0,0,100,50],[0,0,100,50],[0,0,100,50]]
+    },
+    'obstacle':{//障碍物
+        'num':3,//每个画面显示障碍物的个数
+        'safearea_height':300,//安全范围的高度
+        'width':80,//障碍物宽度
+        'area':[0,0,100,50],//障碍物在资源图片上的坐标
+    },
+    'ground':{//地面
+        'z_distance':1,
+        'area':[0,0,100,50],//地面资源图片上的坐标
+    },
+    'clound':{//云
+        'z_distance':10,
+        'area':[[0,0,100,50],[0,0,100,50],[0,0,100,50]],//云资源图片上的坐标
+    },
+    // 'sky':{//天空
+
+    // }
+}
 var FlappyBird = function(canvas) {
 
     //所有信息所在html标签
@@ -56,6 +96,11 @@ var FlappyBird = function(canvas) {
     var _canvas_width = 600;
     var _canvas_height = 600;
     var _grass_unit_width=400;
+    var _grass=[];
+    var _grass_x=0;
+    var _yun=[];
+    var _yun_x=0;
+    var _yun_unit_width=400;
     //显示画布内容
     var _render = function() {
         var now = new Date();
@@ -144,8 +189,6 @@ var FlappyBird = function(canvas) {
             }
         }
     };
-    var _grass=[];
-    var _grass_x=0;
 
     var initGroundGrass=function(){
     	if(_grass.length>0 && _grass[0]['x']+_grass_unit_width<0){
@@ -159,9 +202,7 @@ var FlappyBird = function(canvas) {
             }
         }
     };
-    var _yun=[];
-    var _yun_x=0;
-    var _yun_unit_width=400;
+    
 
     var initYun=function(){
     	if(_yun.length>0 && _yun[0]['x']+_yun_unit_width<0){
@@ -242,48 +283,26 @@ var FlappyBird = function(canvas) {
             }
         });
     };
-    
+
+    //设置canvas属性
+    var setCanvas=function(canvas){
+        canvas=document.createElement('canvas');
+        canvas.style.position = 'absolute';
+        canvas.style.left = 0;
+        canvas.style.top = 0;
+        canvas.height = _canvas_width;
+        canvas.width = _canvas_height;
+        return canvas;
+    }
+
     _flappybird = document.getElementById('flappybird');
 
-    _first_canvas = document.createElement('canvas');
+    _first_canvas =setCanvas(_first_canvas);
+    _obstacle_canvas = setCanvas(_obstacle_canvas);
+    _ground_canvas=setCanvas(_ground_canvas);
+	_sky_canvas=setCanvas(_sky_canvas);
+	_yun_canvas=setCanvas(_yun_canvas);
 
-    _obstacle_canvas = document.createElement('canvas');
-
-    _ground_canvas=document.createElement('canvas');
-
-	_sky_canvas=document.createElement('canvas');
-
-	_yun_canvas=document.createElement('canvas');
-
-    _first_canvas.style.position = 'absolute';
-    _first_canvas.style.left = 0;
-    _first_canvas.style.top = 0;
-    _first_canvas.height = _canvas_width;
-    _first_canvas.width = _canvas_height;
-
-    _obstacle_canvas.style.position = 'absolute';
-    _obstacle_canvas.style.left = 0;
-    _obstacle_canvas.style.top = 0;
-    _obstacle_canvas.height = _canvas_width;
-    _obstacle_canvas.width = _canvas_height;
-
-	_ground_canvas.style.position = 'absolute';
-    _ground_canvas.style.left = 0;
-    _ground_canvas.style.top = 0;
-    _ground_canvas.height = _canvas_width;
-    _ground_canvas.width = _canvas_height;
-
-    _yun_canvas.style.position = 'absolute';
-    _yun_canvas.style.left = 0;
-    _yun_canvas.style.top = 0;
-    _yun_canvas.height = _canvas_width;
-    _yun_canvas.width = _canvas_height;
-
-    _sky_canvas.style.position = 'absolute';
-    _sky_canvas.style.left = 0;
-    _sky_canvas.style.top = 0;
-    _sky_canvas.height = _canvas_width;
-    _sky_canvas.width = _canvas_height;
 
     _birdimage1.src = './wuya.png';
     _birdimage2.src = './wuya2.png';
