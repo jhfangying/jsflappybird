@@ -6,29 +6,35 @@ var FlappyBird = function(canvas) {
     var _first_canvas;
     //障碍物画布
     var _obstacle_canvas;
+    //天空画布
     var _sky_canvas;
-
+    //云画布
     var _yun_canvas;
-
+    //地画布
     var _ground_canvas;
     //鸟画布内容
     var _first_canvas_context;
     //障碍物画布内容
     var _obstacle_canvas_context;
-
+    //天空画布内容
     var _sky_canvas_context;
+    //地面画布内容
     var _ground_canvas_context;
+    //云画布内容
 	var _yun_canvas_context;
-
+	
     var _time;
     //鸟动作图1
     var _birdimage1 = new Image();
     //鸟动作图2
     var _birdimage2 = new Image();
+    //地上的草
     var _ground_grass_image=new Image();
+    //云
     var _yun_image=new Image();
+    //天空
     var _sky_image=new Image();
-
+    
     var _topY=0;
     var _groundY = 600;
     var _v = 0;//小鸟初始速度 单位px/s
