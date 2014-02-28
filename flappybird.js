@@ -286,7 +286,7 @@ var FlappyBird = function(canvas) {
     _sky_canvas.width = _canvas_height;
 
     _birdimage1.src = './wuya.png';
-    _birdimage2.src = './mifeng.png';
+    _birdimage2.src = './wuya2.png';
     _ground_grass_image.src ='./ground.png';
     _yun_image.src='./yun.png';
     _sky_image.src='./tian.jpg';
