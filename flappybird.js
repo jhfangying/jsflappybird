@@ -74,11 +74,13 @@ var FlappyBird = function(canvas) {
     var _yun_image=new Image();
     //天空
     var _sky_image=new Image();
+    //柱子
+    var _obstacle_image=new Image();
     
     var _topY=0;
     var _groundY = 600;
     var _v = 0;//小鸟初始速度 单位px/s
-    var _backgroundv=80;
+    var _backgroundv=300;
     var _g = 9.8;//重力加速度
     var _pixpermile = 100;// 每米长度像但与多少像素，真实比例是4202像素等于1米
     var _date = new Date();
@@ -113,6 +115,7 @@ var FlappyBird = function(canvas) {
         calculateYun(_timespan);
 
         resetCanvas();
+
         drawCanvas();
         window.requestAnimationFrame(_render);
     };
@@ -137,6 +140,7 @@ var FlappyBird = function(canvas) {
         _bird['y'] = _bird['y'] + _v * timespan / 1000;
         _v = _v + _g * _pixpermile * timespan / 1000;
     };
+
     var calculateObstacle=function(timespan){
         if (_bird['isdead'] == 1)
             return;
@@ -216,6 +220,7 @@ var FlappyBird = function(canvas) {
             }
         }
     }
+
     //画出画布内容,从后往前画
     var drawCanvas = function() {
     	drawGroundGrass();
@@ -237,9 +242,10 @@ var FlappyBird = function(canvas) {
     var drawFirstLayoutBackground=function(){
         _obstacle_canvas_context.fillStyle='#000';
         for(var i=0,l=_obstacle.length;i<l;i++){
-            _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_topY,_obstacle_width,_obstacle[i]['y']-_topY);
-
-            _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_obstacle[i]['y']+_obstacle_height,_obstacle_width,_groundY-_obstacle[i]['y']+_obstacle_height);
+            // _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_topY,_obstacle_width,_obstacle[i]['y']-_topY);
+            _obstacle_canvas_context.drawImage(_obstacle_image,170,50,50,340, _obstacle[i]['x'],_topY,_obstacle_width,_obstacle[i]['y']-_topY);
+            _obstacle_canvas_context.drawImage(_obstacle_image,170,30,50,340,_obstacle[i]['x'],_obstacle[i]['y']+_obstacle_height,_obstacle_width,_groundY-_obstacle[i]['y']+_obstacle_height);
+            // _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_obstacle[i]['y']+_obstacle_height,_obstacle_width,_groundY-_obstacle[i]['y']+_obstacle_height);
         }
     }
     var drawGroundGrass=function(){
@@ -309,7 +315,7 @@ var FlappyBird = function(canvas) {
     _ground_grass_image.src ='./ground.png';
     _yun_image.src='./yun.png';
     _sky_image.src='./tian.jpg';
-
+    _obstacle_image.src='./zhuzi.png';
     
     _flappybird.appendChild(_sky_canvas);
     _flappybird.appendChild(_yun_canvas);
