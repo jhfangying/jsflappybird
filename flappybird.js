@@ -6,18 +6,31 @@ var FlappyBird = function(canvas) {
     var _first_canvas;
     //障碍物画布
     var _obstacle_canvas;
+    var _sky_canvas;
+
+    var _yun_canvas;
+
+    var _ground_canvas;
     //鸟画布内容
     var _first_canvas_context;
     //障碍物画布内容
     var _obstacle_canvas_context;
+
+    var _sky_canvas_context;
+    var _ground_canvas_context;
+	var _yun_canvas_context;
 
     var _time;
     //鸟动作图1
     var _birdimage1 = new Image();
     //鸟动作图2
     var _birdimage2 = new Image();
+    var _ground_grass_image=new Image();
+    var _yun_image=new Image();
+    var _sky_image=new Image();
+
     var _topY=0;
-    var _groundY = 1000;
+    var _groundY = 600;
     var _v = 0;//小鸟初始速度 单位px/s
     var _backgroundv=80;
     var _g = 9.8;//重力加速度
@@ -34,6 +47,9 @@ var FlappyBird = function(canvas) {
     var _show_obstacle_num=8;
     var _obstacle_x=500;
     var _obstacle_width=80;
+    var _canvas_width = 600;
+    var _canvas_height = 600;
+    var _grass_unit_width=400;
     //显示画布内容
     var _render = function() {
         var now = new Date();
@@ -42,7 +58,9 @@ var FlappyBird = function(canvas) {
         checkBirdState();
         calculateBird(_timespan);
         calculateObstacle(_timespan);
-        
+        calculateGroundGrass(_timespan);
+        calculateYun(_timespan);
+
         resetCanvas();
         drawCanvas();
         window.requestAnimationFrame(_render);
@@ -51,6 +69,8 @@ var FlappyBird = function(canvas) {
     var resetCanvas = function() {
         _first_canvas_context.clearRect(0, 0, _first_canvas.width, _first_canvas.height);
         _obstacle_canvas_context.clearRect(0, 0, _first_canvas.width, _first_canvas.height);
+        _ground_canvas_context.clearRect(0, 0, _first_canvas.width, _first_canvas.height);
+        _yun_canvas_context.clearRect(0, 0, _first_canvas.width, _first_canvas.height);
     };
     
     //计算鸟的坐标
@@ -58,18 +78,12 @@ var FlappyBird = function(canvas) {
         if (_bird['isdead'] == 1 && _bird['y'] >= _groundY - _bird['height']){
             return;
         }
-        // if(_bird['isdead'] == 1 && _bird['y'] < _groundY - _bird['height']){
-
-
-        // }  
-
-
         if (_bird['isdead'] == 2 && _bird['y'] >= _groundY - _bird['height']) {
             _bird['y'] = _groundY - _bird['height'];
             _bird['isdead'] = 1;
             return;
         };
-        _bird['y'] = _bird['y'] + _v * timespan / 1000;//(_g*_pixpermile*timespan/1000*timespan*_g*_pixpermile*timespan/1000*timespan-_v*_v)/2*_g*_pixpermile;//+0.5*_g*(timespan/1000*timespan/1000);
+        _bird['y'] = _bird['y'] + _v * timespan / 1000;
         _v = _v + _g * _pixpermile * timespan / 1000;
     };
     var calculateObstacle=function(timespan){
@@ -80,6 +94,26 @@ var FlappyBird = function(canvas) {
         }
         init_obstacle();
     };
+    
+    var calculateGroundGrass=function(timespan){
+    	if (_bird['isdead'] == 1)
+            return;
+        for(var i=0,l=_grass.length;i<l;i++){
+            _grass[i]['x']=_grass[i]['x']-_backgroundv*timespan/1000*0.5;
+        }
+        initGroundGrass();
+    }
+
+
+    var calculateYun=function(timespan){
+    	if (_bird['isdead'] == 1)
+            return;
+        for(var i=0,l=_yun.length;i<l;i++){
+            _yun[i]['x']=_yun[i]['x']-_backgroundv*timespan/1000/20;
+        }
+        initYun();
+    }
+
     //检查鸟的状态，有没有碰上柱子或者地板
     var checkBirdState=function(){
         for(var i=0,l=_obstacle.length;i<l;i++){
@@ -98,16 +132,49 @@ var FlappyBird = function(canvas) {
         }
         while(_obstacle.length<_show_obstacle_num){
             if(_obstacle.length==0){
-                _obstacle.push({'x':_obstacle_x,'y':parseInt(Math.random()*(700-200+1)+200)});
+                _obstacle.push({'x':_obstacle_x,'y':parseInt(Math.random()*(250-50+1)+50)});
             }else{
-                _obstacle.push({'x':_obstacle[_obstacle.length-1]['x']+_obstacle_distance,'y':parseInt(Math.random()*(800-100+1)+100)});
+                _obstacle.push({'x':_obstacle[_obstacle.length-1]['x']+_obstacle_distance,'y':parseInt(Math.random()*(250-50+1)+50)});
             }
         }
     };
+    var _grass=[];
+    var _grass_x=0;
+
+    var initGroundGrass=function(){
+    	if(_grass.length>0 && _grass[0]['x']+_grass_unit_width<0){
+            _grass.shift();
+        }
+        while(_grass.length<Math.ceil(_canvas_width/_grass_unit_width)+1){
+            if(_grass.length==0){
+                _grass.push({'x':_grass_x});
+            }else{
+                _grass.push({'x':_grass[_grass.length-1]['x']+_grass_unit_width});
+            }
+        }
+    };
+    var _yun=[];
+    var _yun_x=0;
+    var _yun_unit_width=400;
+
+    var initYun=function(){
+    	if(_yun.length>0 && _yun[0]['x']+_yun_unit_width<0){
+            _yun.shift();
+        }
+        while(_yun.length<Math.ceil(_canvas_width/_yun_unit_width)+1){
+            if(_yun.length==0){
+                _yun.push({'x':_yun_x});
+            }else{
+                _yun.push({'x':_yun[_yun.length-1]['x']+_yun_unit_width});
+            }
+        }
+    }
     //画出画布内容,从后往前画
     var drawCanvas = function() {
+    	drawGroundGrass();
         drawFirstLayoutBackground();
-
+        drawSky();
+        drawYun();
         drawFrame();
         
         drawBird();
@@ -124,8 +191,23 @@ var FlappyBird = function(canvas) {
         _obstacle_canvas_context.fillStyle='#000';
         for(var i=0,l=_obstacle.length;i<l;i++){
             _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_topY,_obstacle_width,_obstacle[i]['y']-_topY);
+
             _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_obstacle[i]['y']+_obstacle_height,_obstacle_width,_groundY-_obstacle[i]['y']+_obstacle_height);
         }
+    }
+    var drawGroundGrass=function(){
+    	for(var i=0,l=_grass.length;i<l;i++){
+    		_ground_canvas_context.drawImage(_ground_grass_image, _grass[i]['x'],_groundY- 50, _grass_unit_width, 50);
+    	}
+    }
+    var drawSky=function(){
+    	_sky_canvas_context.drawImage(_sky_image,0,0,_canvas_width,_canvas_height);
+    }
+
+    var drawYun=function(){
+    	for(var i=0,l=_grass.length;i<l;i++){
+    		_sky_canvas_context.drawImage(_yun_image, _yun[i]['x'],10, _yun_unit_width, 300);
+    	}
     }
     //画出鸟
     var drawBird = function() {
@@ -154,13 +236,19 @@ var FlappyBird = function(canvas) {
             }
         });
     };
-    var _canvas_width = 1000;
-    var _canvas_height = 1000;
+    
     _flappybird = document.getElementById('flappybird');
 
     _first_canvas = document.createElement('canvas');
 
     _obstacle_canvas = document.createElement('canvas');
+
+    _ground_canvas=document.createElement('canvas');
+
+	_sky_canvas=document.createElement('canvas');
+
+	_yun_canvas=document.createElement('canvas');
+
     _first_canvas.style.position = 'absolute';
     _first_canvas.style.left = 0;
     _first_canvas.style.top = 0;
@@ -173,15 +261,43 @@ var FlappyBird = function(canvas) {
     _obstacle_canvas.height = _canvas_width;
     _obstacle_canvas.width = _canvas_height;
 
+	_ground_canvas.style.position = 'absolute';
+    _ground_canvas.style.left = 0;
+    _ground_canvas.style.top = 0;
+    _ground_canvas.height = _canvas_width;
+    _ground_canvas.width = _canvas_height;
+
+    _yun_canvas.style.position = 'absolute';
+    _yun_canvas.style.left = 0;
+    _yun_canvas.style.top = 0;
+    _yun_canvas.height = _canvas_width;
+    _yun_canvas.width = _canvas_height;
+
+    _sky_canvas.style.position = 'absolute';
+    _sky_canvas.style.left = 0;
+    _sky_canvas.style.top = 0;
+    _sky_canvas.height = _canvas_width;
+    _sky_canvas.width = _canvas_height;
+
     _birdimage1.src = './wuya.png';
     _birdimage2.src = './mifeng.png';
+    _ground_grass_image.src ='./ground.png';
+    _yun_image.src='./yun.png';
+    _sky_image.src='./tian.jpg';
 
+    
+    _flappybird.appendChild(_sky_canvas);
+    _flappybird.appendChild(_yun_canvas);
+    _flappybird.appendChild(_ground_canvas);
     _flappybird.appendChild(_obstacle_canvas);
     _flappybird.appendChild(_first_canvas);
+    
 
     _obstacle_canvas_context = _obstacle_canvas.getContext("2d");
     _first_canvas_context = _first_canvas.getContext("2d");
-
+    _ground_canvas_context= _ground_canvas.getContext("2d");
+    _sky_canvas_context= _sky_canvas.getContext("2d");
+	_yun_canvas_context=_yun_canvas.getContext("2d");
 
     bindKey();
     _render();
