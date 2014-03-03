@@ -2,23 +2,24 @@
 var config={
     'container':{//游戏所放的位置的元素名称
         'id':'flappybird',//元素id
-        'width':1080,//宽度
-        'height':920//高度
+        'width':600,//宽度
+        'height':480//高度
     },
     'canvas':{//画布
         'top':0,//顶部坐标 百分比
         'bottom':1,//底部坐标 百分比
         'background_image':'',//背景图
-        'resource':''//资源图片
+        'resource':'./javascripts/sucai.png'//资源图片
     },
     'world':{
         'g':9.8,//加速度
     },
     'bird':{//鸟
         'speed':160,
+        'upspeed':-400,
         'dropspeed':0,
-        'height':35,
-        'width':35,
+        'height':25,
+        'width':25,
         'origin_pos':[0.2,0.5],//百分比
         'area':[[0,0,94,80],[94,0,94,80]]
     },
@@ -26,9 +27,10 @@ var config={
         'num':2,//每个画面显示障碍物的个数
         'miny':0.1,//百分比
         'maxy':0.5,//百分比
-        'safearea_height':0.2,//安全范围的高度，百分比
-        'width':0.1,//障碍物宽度，百分比
+        'safearea_height':0.3,//安全范围的高度，百分比
+        'width':0.2,//障碍物宽度，百分比
         'area':[170,50,50,340],//障碍物在资源图片上的坐标
+        'image':'./javascripts/zhuzi.png'
     },
     'ground':{//地面
         'z_distance':1,
@@ -38,6 +40,9 @@ var config={
         'z_distance':10,
         'area':[12,103,952,300],//云资源图片上的坐标
     },
+    'sky':{
+        'image':'./javascripts/tian.jpg'
+    }
 };
 var FlappyBird = function(canvas) {
      //按比例获取宽度
@@ -71,8 +76,8 @@ var FlappyBird = function(canvas) {
     //地面画布内容
     var _ground_canvas_context;
     //云画布内容
-	var _yun_canvas_context;
-	
+    var _yun_canvas_context;
+    
     var _time;
     //资源图
     var _source_image=new Image();
@@ -157,7 +162,7 @@ var FlappyBird = function(canvas) {
     };
     
     var calculateGroundGrass=function(timespan){
-    	if (_isdead == 1)
+        if (_isdead == 1)
             return;
         for(var i=0,l=_grass.length;i<l;i++){
             _grass[i]['x']=_grass[i]['x']-getSpeed(config['bird']['speed'],config['ground']['z_distance'])*timespan/1000;
@@ -167,7 +172,7 @@ var FlappyBird = function(canvas) {
 
 
     var calculateYun=function(timespan){
-    	if (_isdead == 1)
+        if (_isdead == 1)
             return;
         for(var i=0,l=_yun.length;i<l;i++){
             _yun[i]['x']=_yun[i]['x']-getSpeed(config['bird']['speed'],config['clound']['z_distance'])*timespan/1000;
@@ -207,7 +212,7 @@ var FlappyBird = function(canvas) {
 
     //初始化草地
     var initGroundGrass=function(){
-    	if(_grass.length>0 && _grass[0]['x']+_grass_unit_width<0){
+        if(_grass.length>0 && _grass[0]['x']+_grass_unit_width<0){
             _grass.shift();
         }
         while(_grass.length<Math.ceil(config['container']['width']/_grass_unit_width)+1){
@@ -221,7 +226,7 @@ var FlappyBird = function(canvas) {
     
 
     var initYun=function(){
-    	if(_yun.length>0 && _yun[0]['x']+_yun_unit_width<0){
+        if(_yun.length>0 && _yun[0]['x']+_yun_unit_width<0){
             _yun.shift();
         }
         while(_yun.length<Math.ceil(config['container']['width']/_yun_unit_width)+1){
@@ -235,7 +240,7 @@ var FlappyBird = function(canvas) {
 
     //画出画布内容,从后往前画
     var drawCanvas = function() {
-    	drawGroundGrass();
+        drawGroundGrass();
         drawFirstLayoutBackground();
         drawSky();
         drawYun();
@@ -260,19 +265,19 @@ var FlappyBird = function(canvas) {
     }
     //画草地
     var drawGroundGrass=function(){
-    	for(var i=0,l=_grass.length;i<l;i++){
+        for(var i=0,l=_grass.length;i<l;i++){
             drawResource(_ground_canvas_context,_source_image,config['ground']['area'],[_grass[i]['x'],getAbsoluteHeightUnit(config['canvas']['bottom']) - 50, _grass_unit_width, 50]);
-    	}
+        }
     }
     //画天空
     var drawSky=function(){
-    	_sky_canvas_context.drawImage(_sky_image,0,0,config['container']['width'],config['container']['height']);
+        _sky_canvas_context.drawImage(_sky_image,0,0,config['container']['width'],config['container']['height']);
     }
     //画云
     var drawYun=function(){
-    	for(var i=0,l=_grass.length;i<l;i++){
+        for(var i=0,l=_grass.length;i<l;i++){
             drawResource(_sky_canvas_context,_source_image,config['clound']['area'],[_yun[i]['x'],10, _yun_unit_width, 400]);
-    	}
+        }
     }
     //画出鸟
     var drawBird = function() {
@@ -297,7 +302,7 @@ var FlappyBird = function(canvas) {
         $(window).bind('keyup', function(event) {
             if (event.keyCode == 32) {
                 if (_isdead != 1){
-                    _v = -500;
+                    _v = config['bird']['upspeed'];
                 }
             }
         });
@@ -307,8 +312,8 @@ var FlappyBird = function(canvas) {
     var setCanvas=function(canvas){
         canvas=document.createElement('canvas');
         canvas.style.position = 'absolute';
-        canvas.style.left = 0;
-        canvas.style.top = 0;
+        canvas.style.left = 10;
+        canvas.style.top = 670;
         canvas.height = config['container']['height'];
         canvas.width = config['container']['width'];
         return canvas;
@@ -319,12 +324,12 @@ var FlappyBird = function(canvas) {
     _first_canvas =setCanvas(_first_canvas);
     _obstacle_canvas = setCanvas(_obstacle_canvas);
     _ground_canvas=setCanvas(_ground_canvas);
-	_sky_canvas=setCanvas(_sky_canvas);
-	_yun_canvas=setCanvas(_yun_canvas);
+    _sky_canvas=setCanvas(_sky_canvas);
+    _yun_canvas=setCanvas(_yun_canvas);
     //资源图片
-    _source_image.src='./sucai.png';
-    _sky_image.src='./tian.jpg';
-    _obstacle_image.src='./zhuzi.png';
+    _source_image.src=config['canvas']['resource'];
+    _sky_image.src=config['sky']['image'];
+    _obstacle_image.src=config['obstacle']['image'];
     
     _flappybird.appendChild(_sky_canvas);
     _flappybird.appendChild(_yun_canvas);
@@ -337,7 +342,7 @@ var FlappyBird = function(canvas) {
     _first_canvas_context = _first_canvas.getContext("2d");
     _ground_canvas_context= _ground_canvas.getContext("2d");
     _sky_canvas_context= _sky_canvas.getContext("2d");
-	_yun_canvas_context=_yun_canvas.getContext("2d");
+    _yun_canvas_context=_yun_canvas.getContext("2d");
 
     bindKey();
     _render();
