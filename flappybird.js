@@ -65,13 +65,14 @@ var FlappyBird = function(canvas) {
 	
     var _time;
     //鸟动作图1
-    var _birdimage1 = new Image();
-    //鸟动作图2
-    var _birdimage2 = new Image();
-    //地上的草
-    var _ground_grass_image=new Image();
-    //云
-    var _yun_image=new Image();
+    // var _birdimage1 = new Image();
+    // //鸟动作图2
+    // var _birdimage2 = new Image();
+    // //地上的草
+    // var _ground_grass_image=new Image();
+    // //云
+    // var _yun_image=new Image();
+    var _source_image=new Image();
     //天空
     var _sky_image=new Image();
     //柱子
@@ -80,7 +81,7 @@ var FlappyBird = function(canvas) {
     var _topY=0;
     var _groundY = 600;
     var _v = 0;//小鸟初始速度 单位px/s
-    var _backgroundv=300;
+    var _backgroundv=10;
     var _g = 9.8;//重力加速度
     var _pixpermile = 100;// 每米长度像但与多少像素，真实比例是4202像素等于1米
     var _date = new Date();
@@ -113,9 +114,7 @@ var FlappyBird = function(canvas) {
         calculateObstacle(_timespan);
         calculateGroundGrass(_timespan);
         calculateYun(_timespan);
-
         resetCanvas();
-
         drawCanvas();
         window.requestAnimationFrame(_render);
     };
@@ -137,8 +136,14 @@ var FlappyBird = function(canvas) {
             _bird['isdead'] = 1;
             return;
         };
+        //当鸟飞到上边界时
+        if( _bird['y'] < _topY){
+            _bird['y']=_topY;
+            _v=0;
+        }
         _bird['y'] = _bird['y'] + _v * timespan / 1000;
         _v = _v + _g * _pixpermile * timespan / 1000;
+
     };
 
     var calculateObstacle=function(timespan){
@@ -239,44 +244,42 @@ var FlappyBird = function(canvas) {
         _first_canvas_context.textBaseline = "top";
         _first_canvas_context.fillText(Math.floor(1000 / _timespan), 0, 0);
     };
+    //画障碍物
     var drawFirstLayoutBackground=function(){
         _obstacle_canvas_context.fillStyle='#000';
         for(var i=0,l=_obstacle.length;i<l;i++){
-            // _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_topY,_obstacle_width,_obstacle[i]['y']-_topY);
             _obstacle_canvas_context.drawImage(_obstacle_image,170,50,50,340, _obstacle[i]['x'],_topY,_obstacle_width,_obstacle[i]['y']-_topY);
             _obstacle_canvas_context.drawImage(_obstacle_image,170,30,50,340,_obstacle[i]['x'],_obstacle[i]['y']+_obstacle_height,_obstacle_width,_groundY-_obstacle[i]['y']+_obstacle_height);
-            // _obstacle_canvas_context.fillRect(_obstacle[i]['x'],_obstacle[i]['y']+_obstacle_height,_obstacle_width,_groundY-_obstacle[i]['y']+_obstacle_height);
         }
     }
+    //画草地
     var drawGroundGrass=function(){
     	for(var i=0,l=_grass.length;i<l;i++){
-    		_ground_canvas_context.drawImage(_ground_grass_image, _grass[i]['x'],_groundY- 50, _grass_unit_width, 50);
+    		_ground_canvas_context.drawImage(_source_image,10,445,993,144, _grass[i]['x'],_groundY- 50, _grass_unit_width, 50);
     	}
     }
+    //画天空
     var drawSky=function(){
     	_sky_canvas_context.drawImage(_sky_image,0,0,_canvas_width,_canvas_height);
     }
-
+    //画云
     var drawYun=function(){
     	for(var i=0,l=_grass.length;i<l;i++){
-    		_sky_canvas_context.drawImage(_yun_image, _yun[i]['x'],10, _yun_unit_width, 300);
+    		_sky_canvas_context.drawImage(_source_image,12,103,952,300, _yun[i]['x'],10, _yun_unit_width, 300);
     	}
     }
     //画出鸟
     var drawBird = function() {
         if (_bird['isdead'] == 1) {
-            _first_canvas_context.drawImage(_birdimage1, _bird['x'], _bird['y'], _bird['width'], _bird['height']);
+            _first_canvas_context.drawImage(_source_image,0,0,94,80, _bird['x'], _bird['y'], _bird['width'], _bird['height']);
             return;
         }
         var time = new Date();
         if (time.getMilliseconds() % 500 < 250) {
-            _first_canvas_context.drawImage(_birdimage1, _bird['x'], _bird['y'], _bird['width'], _bird['height']);
+            _first_canvas_context.drawImage(_source_image,0,0,94,80, _bird['x'], _bird['y'], _bird['width'], _bird['height']);
         } else {
-            _first_canvas_context.drawImage(_birdimage2, _bird['x'], _bird['y'], _bird['width'], _bird['height']);
+            _first_canvas_context.drawImage(_source_image,94,0,94,80, _bird['x'], _bird['y'], _bird['width'], _bird['height']);
         }
-    };
-    var drawObstacle=function(){
-        
     };
     //绑定空格键到窗口上
     var bindKey = function() {
@@ -285,7 +288,6 @@ var FlappyBird = function(canvas) {
                 if (_bird['isdead'] != 1){
                     _v = -500;
                 }
-                
             }
         });
     };
@@ -308,12 +310,8 @@ var FlappyBird = function(canvas) {
     _ground_canvas=setCanvas(_ground_canvas);
 	_sky_canvas=setCanvas(_sky_canvas);
 	_yun_canvas=setCanvas(_yun_canvas);
-
-
-    _birdimage1.src = './wuya.png';
-    _birdimage2.src = './wuya2.png';
-    _ground_grass_image.src ='./ground.png';
-    _yun_image.src='./yun.png';
+    //资源图片
+    _source_image.src='./sucai.png';
     _sky_image.src='./tian.jpg';
     _obstacle_image.src='./zhuzi.png';
     
