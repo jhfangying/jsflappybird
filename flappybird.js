@@ -13,7 +13,7 @@ var config={
         'top':0,//顶部坐标 百分比
         'bottom':1,//底部坐标 百分比
         'background_image':'',//背景图
-        'resource':'./javascripts/sucai.png'//资源图片
+        'resource':'./sucai.png'//资源图片
     },
     'world':{
         'g':9.8,//加速度
@@ -34,7 +34,7 @@ var config={
         'safearea_height':0.3,//安全范围的高度，百分比
         'width':0.2,//障碍物宽度，百分比
         'area':[170,50,50,340],//障碍物在资源图片上的坐标
-        'image':'./javascripts/zhuzi.png'
+        'image':'./zhuzi.png'
     },
     'ground':{//地面
         'z_distance':1,
@@ -45,7 +45,7 @@ var config={
         'area':[12,103,952,300],//云资源图片上的坐标
     },
     'sky':{
-        'image':'./javascripts/tian.jpg'
+        'image':'./tian.jpg'
     }
 };
 var FlappyBird = function(canvas) {
@@ -111,6 +111,8 @@ var FlappyBird = function(canvas) {
     //鸟死了就是1，没死就是2，初始为2
     var _isdead=2;
 
+    //游戏是否已经准备好开始了
+    var _isready=2;
    
     //鸟
     var _bird = {'x': getAbsoluteWidthUnit(config['bird']['origin_pos'][0]) , 'y': getAbsoluteHeightUnit(config['bird']['origin_pos'][1])};
@@ -127,6 +129,7 @@ var FlappyBird = function(canvas) {
         resetCanvas();
         drawCanvas();
         window.requestAnimationFrame(_render);
+        
     };
     //重置画布内容
     var resetCanvas = function() {
@@ -135,9 +138,17 @@ var FlappyBird = function(canvas) {
         _ground_canvas_context.clearRect(0, 0, config['container']['width'], config['container']['height']);
         _yun_canvas_context.clearRect(0, 0, config['container']['width'], config['container']['height']);
     };
-    
+    var resetGame=function(){
+        _bird = {'x': getAbsoluteWidthUnit(config['bird']['origin_pos'][0]) , 'y': getAbsoluteHeightUnit(config['bird']['origin_pos'][1])};
+        _obstacle=[];
+        _grass=[];
+        _yun=[];
+        _isdead=2;
+        _v = config['bird']['upspeed'];
+    }
     //计算鸟的坐标
     var calculateBird = function(timespan) {
+        if(_isready==2)return;
         if (_isdead == 1 && _bird['y'] >= getAbsoluteHeightUnit(config['canvas']['bottom']) - config['bird']['height']){
             return;
         }
@@ -157,6 +168,7 @@ var FlappyBird = function(canvas) {
     };
 
     var calculateObstacle=function(timespan){
+        if(_isready==2)return;
         if (_isdead == 1)
             return;
         for(var i=0,l=_obstacle.length;i<l;i++){
@@ -166,6 +178,7 @@ var FlappyBird = function(canvas) {
     };
     
     var calculateGroundGrass=function(timespan){
+        if(_isready==2)return;
         if (_isdead == 1)
             return;
         for(var i=0,l=_grass.length;i<l;i++){
@@ -176,6 +189,7 @@ var FlappyBird = function(canvas) {
 
 
     var calculateYun=function(timespan){
+        if(_isready==2)return;
         if (_isdead == 1)
             return;
         for(var i=0,l=_yun.length;i<l;i++){
@@ -249,6 +263,7 @@ var FlappyBird = function(canvas) {
         drawSky();
         drawYun();
         drawFrame();
+        drawStartText();
         drawBird();
 
     };
@@ -259,6 +274,14 @@ var FlappyBird = function(canvas) {
         _first_canvas_context.textBaseline = "top";
         _first_canvas_context.fillText(Math.floor(1000 / _timespan), 0, 0);
     };
+    var drawStartText=function(){
+        if(_isready==2 || _isdead==1){
+            _first_canvas_context.fillStyle = "#000";
+            _first_canvas_context.font = "italic 16px sans-serif";
+            _first_canvas_context.textBaseline = "top";
+            _first_canvas_context.fillText("按空格键开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
+        }
+    }
     //画障碍物
     var drawFirstLayoutBackground=function(){
         _obstacle_canvas_context.fillStyle='#000';
@@ -305,8 +328,11 @@ var FlappyBird = function(canvas) {
     var bindKey = function() {
         $(window).bind('keyup', function(event) {
             if (event.keyCode == 32) {
+                if(_isready==2)_isready=1;
                 if (_isdead != 1){
                     _v = config['bird']['upspeed'];
+                }else{
+                    resetGame();
                 }
             }
         });
