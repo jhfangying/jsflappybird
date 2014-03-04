@@ -76,8 +76,8 @@ var FlappyBird = function(canvas) {
     //地面画布内容
     var _ground_canvas_context;
     //云画布内容
-	var _yun_canvas_context;
-	
+    var _yun_canvas_context;
+    
     var _time;
     //资源图
     var _source_image=new Image();
@@ -107,6 +107,8 @@ var FlappyBird = function(canvas) {
     //鸟死了就是1，没死就是2，初始为2
     var _isdead=2;
 
+    //游戏是否已经准备好开始了
+    var _isready=2;
    
     //鸟
     var _bird = {'x': getAbsoluteWidthUnit(config['bird']['origin_pos'][0]) , 'y': getAbsoluteHeightUnit(config['bird']['origin_pos'][1])};
@@ -123,6 +125,7 @@ var FlappyBird = function(canvas) {
         resetCanvas();
         drawCanvas();
         window.requestAnimationFrame(_render);
+        
     };
     //重置画布内容
     var resetCanvas = function() {
@@ -131,9 +134,17 @@ var FlappyBird = function(canvas) {
         _ground_canvas_context.clearRect(0, 0, config['container']['width'], config['container']['height']);
         _yun_canvas_context.clearRect(0, 0, config['container']['width'], config['container']['height']);
     };
-    
+    var resetGame=function(){
+        _bird = {'x': getAbsoluteWidthUnit(config['bird']['origin_pos'][0]) , 'y': getAbsoluteHeightUnit(config['bird']['origin_pos'][1])};
+        _obstacle=[];
+        _grass=[];
+        _yun=[];
+        _isdead=2;
+        _v = config['bird']['upspeed'];
+    }
     //计算鸟的坐标
     var calculateBird = function(timespan) {
+        if(_isready==2)return;
         if (_isdead == 1 && _bird['y'] >= getAbsoluteHeightUnit(config['canvas']['bottom']) - config['bird']['height']){
             return;
         }
@@ -153,6 +164,7 @@ var FlappyBird = function(canvas) {
     };
 
     var calculateObstacle=function(timespan){
+        if(_isready==2)return;
         if (_isdead == 1)
             return;
         for(var i=0,l=_obstacle.length;i<l;i++){
@@ -162,7 +174,8 @@ var FlappyBird = function(canvas) {
     };
     
     var calculateGroundGrass=function(timespan){
-    	if (_isdead == 1)
+        if(_isready==2)return;
+        if (_isdead == 1)
             return;
         for(var i=0,l=_grass.length;i<l;i++){
             _grass[i]['x']=_grass[i]['x']-getSpeed(config['bird']['speed'],config['ground']['z_distance'])*timespan/1000;
@@ -172,7 +185,8 @@ var FlappyBird = function(canvas) {
 
 
     var calculateYun=function(timespan){
-    	if (_isdead == 1)
+        if(_isready==2)return;
+        if (_isdead == 1)
             return;
         for(var i=0,l=_yun.length;i<l;i++){
             _yun[i]['x']=_yun[i]['x']-getSpeed(config['bird']['speed'],config['clound']['z_distance'])*timespan/1000;
@@ -212,7 +226,7 @@ var FlappyBird = function(canvas) {
 
     //初始化草地
     var initGroundGrass=function(){
-    	if(_grass.length>0 && _grass[0]['x']+_grass_unit_width<0){
+        if(_grass.length>0 && _grass[0]['x']+_grass_unit_width<0){
             _grass.shift();
         }
         while(_grass.length<Math.ceil(config['container']['width']/_grass_unit_width)+1){
@@ -226,7 +240,7 @@ var FlappyBird = function(canvas) {
     
 
     var initYun=function(){
-    	if(_yun.length>0 && _yun[0]['x']+_yun_unit_width<0){
+        if(_yun.length>0 && _yun[0]['x']+_yun_unit_width<0){
             _yun.shift();
         }
         while(_yun.length<Math.ceil(config['container']['width']/_yun_unit_width)+1){
@@ -240,11 +254,12 @@ var FlappyBird = function(canvas) {
 
     //画出画布内容,从后往前画
     var drawCanvas = function() {
-    	drawGroundGrass();
+        drawGroundGrass();
         drawFirstLayoutBackground();
         drawSky();
         drawYun();
         drawFrame();
+        drawStartText();
         drawBird();
 
     };
@@ -255,6 +270,14 @@ var FlappyBird = function(canvas) {
         _first_canvas_context.textBaseline = "top";
         _first_canvas_context.fillText(Math.floor(1000 / _timespan), 0, 0);
     };
+    var drawStartText=function(){
+        if(_isready==2 || _isdead==1){
+            _first_canvas_context.fillStyle = "#000";
+            _first_canvas_context.font = "italic 16px sans-serif";
+            _first_canvas_context.textBaseline = "top";
+            _first_canvas_context.fillText("按空格键开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
+        }
+    }
     //画障碍物
     var drawFirstLayoutBackground=function(){
         _obstacle_canvas_context.fillStyle='#000';
@@ -265,19 +288,19 @@ var FlappyBird = function(canvas) {
     }
     //画草地
     var drawGroundGrass=function(){
-    	for(var i=0,l=_grass.length;i<l;i++){
+        for(var i=0,l=_grass.length;i<l;i++){
             drawResource(_ground_canvas_context,_source_image,config['ground']['area'],[_grass[i]['x'],getAbsoluteHeightUnit(config['canvas']['bottom']) - 50, _grass_unit_width, 50]);
-    	}
+        }
     }
     //画天空
     var drawSky=function(){
-    	_sky_canvas_context.drawImage(_sky_image,0,0,config['container']['width'],config['container']['height']);
+        _sky_canvas_context.drawImage(_sky_image,0,0,config['container']['width'],config['container']['height']);
     }
     //画云
     var drawYun=function(){
-    	for(var i=0,l=_grass.length;i<l;i++){
+        for(var i=0,l=_grass.length;i<l;i++){
             drawResource(_sky_canvas_context,_source_image,config['clound']['area'],[_yun[i]['x'],10, _yun_unit_width, 400]);
-    	}
+        }
     }
     //画出鸟
     var drawBird = function() {
@@ -301,8 +324,11 @@ var FlappyBird = function(canvas) {
     var bindKey = function() {
         $(window).bind('keyup', function(event) {
             if (event.keyCode == 32) {
+                if(_isready==2)_isready=1;
                 if (_isdead != 1){
                     _v = config['bird']['upspeed'];
+                }else{
+                    resetGame();
                 }
             }
         });
@@ -324,8 +350,8 @@ var FlappyBird = function(canvas) {
     _first_canvas =setCanvas(_first_canvas);
     _obstacle_canvas = setCanvas(_obstacle_canvas);
     _ground_canvas=setCanvas(_ground_canvas);
-	_sky_canvas=setCanvas(_sky_canvas);
-	_yun_canvas=setCanvas(_yun_canvas);
+    _sky_canvas=setCanvas(_sky_canvas);
+    _yun_canvas=setCanvas(_yun_canvas);
     //资源图片
     _source_image.src=config['canvas']['resource'];
     _sky_image.src=config['sky']['image'];
@@ -342,7 +368,7 @@ var FlappyBird = function(canvas) {
     _first_canvas_context = _first_canvas.getContext("2d");
     _ground_canvas_context= _ground_canvas.getContext("2d");
     _sky_canvas_context= _sky_canvas.getContext("2d");
-	_yun_canvas_context=_yun_canvas.getContext("2d");
+    _yun_canvas_context=_yun_canvas.getContext("2d");
 
     bindKey();
     _render();
