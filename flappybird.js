@@ -126,6 +126,7 @@ var FlappyBird = function(canvas) {
         calculateObstacle(_timespan);
         calculateGroundGrass(_timespan);
         calculateYun(_timespan);
+        // calculateJiFen(_timespan);
         resetCanvas();
         drawCanvas();
         window.requestAnimationFrame(_render);
@@ -144,6 +145,7 @@ var FlappyBird = function(canvas) {
         _grass=[];
         _yun=[];
         _isdead=2;
+        jifen=0;
         _v = config['bird']['upspeed'];
     }
     //计算鸟的坐标
@@ -166,13 +168,32 @@ var FlappyBird = function(canvas) {
         _v = _v + config['world']['g'] * _pixpermeter * timespan / 1000;
 
     };
-
+    var jifen=0;
+    var flydistance=0;
+    var calculateJifen=function(x){
+        var jifenline=config['bird']['origin_pos'][0]*config['container']['width']+config['bird']['width'];
+        if(x<=jifenline){
+            jifen++;
+            return true;
+        }
+        return false;
+        // flydistance=flydistance+_obstacle_x+config['obstacle']['width']*config['container']['width']-getSpeed(config['bird']['speed'],0)*timespan/1000;
+        // jifen=flydistance;
+        // var distance=config['container']['width']/(config['obstacle']['num']);
+        // jifen=Math.floor((jifenline-span)/distance);
+    }
     var calculateObstacle=function(timespan){
         if(_isready==2)return;
         if (_isdead == 1)
             return;
         for(var i=0,l=_obstacle.length;i<l;i++){
             _obstacle[i]['x']=_obstacle[i]['x']-getSpeed(config['bird']['speed'],0)*timespan/1000;
+            if(_obstacle[i]['flag']!=1){
+                if(calculateJifen(_obstacle[i]['x']+config['obstacle']['width']*config['container']['width'])){
+                    _obstacle[i]['flag']=1;
+                }
+                
+            }
         }
         init_obstacle();
     };
@@ -242,7 +263,6 @@ var FlappyBird = function(canvas) {
         }
     };
     
-
     var initYun=function(){
         if(_yun.length>0 && _yun[0]['x']+_yun_unit_width<0){
             _yun.shift();
@@ -264,6 +284,7 @@ var FlappyBird = function(canvas) {
         drawYun();
         drawFrame();
         drawStartText();
+        drawJifen();
         drawBird();
 
     };
@@ -273,6 +294,13 @@ var FlappyBird = function(canvas) {
         _first_canvas_context.font = "italic 16px sans-serif";
         _first_canvas_context.textBaseline = "top";
         _first_canvas_context.fillText(Math.floor(1000 / _timespan), 0, 0);
+    };
+    //画出帧数字
+    var drawJifen = function() {
+        _first_canvas_context.fillStyle = "#00f";
+        _first_canvas_context.font = "italic 16px sans-serif";
+        _first_canvas_context.textBaseline = "top";
+        _first_canvas_context.fillText(jifen, config['container']['width']*0.4, 0);
     };
     var drawStartText=function(){
         if(_isready==2 || _isdead==1){
