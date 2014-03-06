@@ -300,7 +300,7 @@ var FlappyBird = function(canvas) {
         _first_canvas_context.fillStyle = "#00f";
         _first_canvas_context.font = "italic 16px sans-serif";
         _first_canvas_context.textBaseline = "top";
-        _first_canvas_context.fillText(jifen, config['container']['width']*0.4, 0);
+        _first_canvas_context.fillText('分数：'+jifen, config['container']['width']*0.4, 0);
     };
     var drawStartText=function(){
         if(_isready==2 || _isdead==1){
