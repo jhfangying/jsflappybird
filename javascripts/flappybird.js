@@ -396,6 +396,6 @@ var FlappyBird = function(canvas) {
     _sky_canvas_context= _sky_canvas.getContext("2d");
     _yun_canvas_context=_yun_canvas.getContext("2d");
 
-    // bindKey();
+    bindKey();
     _render();
 };
