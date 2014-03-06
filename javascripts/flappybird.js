@@ -9,7 +9,7 @@ var config={
         'top':0,//顶部坐标 百分比
         'bottom':1,//底部坐标 百分比
         'background_image':'',//背景图
-        'resource':'./javascripts/sucai.png'//资源图片
+        'resource':'./images/sucai.png'//资源图片
     },
     'world':{
         'g':9.8,//加速度
@@ -30,7 +30,7 @@ var config={
         'safearea_height':0.3,//安全范围的高度，百分比
         'width':0.2,//障碍物宽度，百分比
         'area':[170,50,50,340],//障碍物在资源图片上的坐标
-        'image':'./javascripts/zhuzi.png'
+        'image':'./images/zhuzi.png'
     },
     'ground':{//地面
         'z_distance':1,
@@ -41,7 +41,7 @@ var config={
         'area':[12,103,952,300],//云资源图片上的坐标
     },
     'sky':{
-        'image':'./javascripts/tian.jpg'
+        'image':'./images/tian.jpg'
     }
 };
 var FlappyBird = function(canvas) {
