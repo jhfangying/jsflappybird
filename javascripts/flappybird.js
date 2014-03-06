@@ -118,7 +118,7 @@ var FlappyBird = function(canvas) {
         _timespan = now - _date;
         _date = now;
         checkBirdState();
-        // calculateBird(_timespan);
+        calculateBird(_timespan);
         calculateObstacle(_timespan);
         calculateGroundGrass(_timespan);
         calculateYun(_timespan);
