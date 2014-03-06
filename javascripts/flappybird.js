@@ -350,15 +350,13 @@ var FlappyBird = function(canvas) {
     }
     //绑定空格键到窗口上
     var bindKey = function() {
-        $(window).bind('click', function(event) {
-            // if (event.keyCode == 32) {
-                if(_isready==2)_isready=1;
-                if (_isdead != 1){
-                    _v = config['bird']['upspeed'];
-                }else{
-                    resetGame();
-                }
-            // }
+        $('#'+config['container']['id']).on('tap', function(event) {
+            if(_isready==2)_isready=1;
+            if (_isdead != 1){
+                _v = config['bird']['upspeed'];
+            }else{
+                resetGame();
+            }
         });
     };
 
