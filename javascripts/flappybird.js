@@ -1,7 +1,3 @@
-//需要增加开始按钮和重新开始按钮
-//需要增加得分功能
-
-
 //配置信息
 var config={
     'container':{//游戏所放的位置的元素名称
@@ -13,7 +9,7 @@ var config={
         'top':0,//顶部坐标 百分比
         'bottom':1,//底部坐标 百分比
         'background_image':'',//背景图
-        'resource':'./sucai.png'//资源图片
+        'resource':'./images/sucai.png'//资源图片
     },
     'world':{
         'g':9.8,//加速度
@@ -34,7 +30,7 @@ var config={
         'safearea_height':0.3,//安全范围的高度，百分比
         'width':0.2,//障碍物宽度，百分比
         'area':[170,50,50,340],//障碍物在资源图片上的坐标
-        'image':'./zhuzi.png'
+        'image':'./images/zhuzi.png'
     },
     'ground':{//地面
         'z_distance':1,
@@ -45,7 +41,7 @@ var config={
         'area':[12,103,952,300],//云资源图片上的坐标
     },
     'sky':{
-        'image':'./tian.jpg'
+        'image':'./images/tian.jpg'
     }
 };
 var FlappyBird = function(canvas) {
@@ -126,6 +122,7 @@ var FlappyBird = function(canvas) {
         calculateObstacle(_timespan);
         calculateGroundGrass(_timespan);
         calculateYun(_timespan);
+        // calculateJiFen(_timespan);
         resetCanvas();
         drawCanvas();
         window.requestAnimationFrame(_render);
@@ -302,7 +299,7 @@ var FlappyBird = function(canvas) {
             _first_canvas_context.fillStyle = "#000";
             _first_canvas_context.font = "italic 16px sans-serif";
             _first_canvas_context.textBaseline = "top";
-            _first_canvas_context.fillText("点击开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
+            _first_canvas_context.fillText("按空格键开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
         }
     }
     //画障碍物
