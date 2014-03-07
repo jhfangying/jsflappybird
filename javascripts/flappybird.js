@@ -122,7 +122,6 @@ var FlappyBird = function(canvas) {
         calculateObstacle(_timespan);
         calculateGroundGrass(_timespan);
         calculateYun(_timespan);
-        // calculateJiFen(_timespan);
         resetCanvas();
         drawCanvas();
         window.requestAnimationFrame(_render);
@@ -173,10 +172,6 @@ var FlappyBird = function(canvas) {
             return true;
         }
         return false;
-        // flydistance=flydistance+_obstacle_x+config['obstacle']['width']*config['container']['width']-getSpeed(config['bird']['speed'],0)*timespan/1000;
-        // jifen=flydistance;
-        // var distance=config['container']['width']/(config['obstacle']['num']);
-        // jifen=Math.floor((jifenline-span)/distance);
     }
     var calculateObstacle=function(timespan){
         if(_isready==2)return;
@@ -303,7 +298,7 @@ var FlappyBird = function(canvas) {
             _first_canvas_context.fillStyle = "#000";
             _first_canvas_context.font = "italic 16px sans-serif";
             _first_canvas_context.textBaseline = "top";
-            _first_canvas_context.fillText("按空格键开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
+            _first_canvas_context.fillText("点击开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
         }
     }
     //画障碍物
