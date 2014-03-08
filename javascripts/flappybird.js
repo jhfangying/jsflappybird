@@ -330,14 +330,15 @@ var FlappyBird = function(canvas) {
     var drawBird = function() {
         var pos_area=[_bird['x'], _bird['y'], config['bird']['width'], config['bird']['height']];
         if (_isdead == 1) {
-            drawResource(_first_canvas_context,_source_image,config['bird']['area'][0],pos_area);
+            drawResource(_first_canvas_context,_source_image,config['bird']['area'][1],pos_area);
             return;
         }
         var time = new Date();
+        var area=_v>0?config['bird']['area'][1]:config['bird']['area'][0];
         if (time.getMilliseconds() % 500 < 250) {
-            drawResource(_first_canvas_context,_source_image,config['bird']['area'][0],pos_area);
+            drawResource(_first_canvas_context,_source_image,area,pos_area);
         } else {
-            drawResource(_first_canvas_context,_source_image,config['bird']['area'][1],pos_area);
+            drawResource(_first_canvas_context,_source_image,area,pos_area);
         }
     };
 
