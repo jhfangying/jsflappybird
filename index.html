@@ -12,10 +12,19 @@
 $(document).ready(function(){
 	// alert(1);
 	var flappybird=new FlappyBird('flappybird');
+  var  media= document.getElementById("bg_music"); 
+  media.volume=0.2;
+  media.play();
 });
 </script>
 <body>
 <div>
+<audio id='bg_music' autoplay="true" controls="true">
+<source src="./music/music1.mp3" type="audio/mpeg">
+</audio>
+<audio id='flap_sound' autoplay="true" controls="true">
+<source src="./music/flap.wav" type="audio/mpeg">
+</audio>
 <div id='flappybird'></div>
 </div>
 </body>

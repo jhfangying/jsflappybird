@@ -349,6 +349,9 @@ var FlappyBird = function(canvas) {
         $('#'+config['container']['id']).on('tap', function(event) {
             if(_isready==2)_isready=1;
             if (_isdead != 1){
+                var media=document.getElementById('flap_sound');
+                media.currentTime = 0;
+                media.play();
                 _v = config['bird']['upspeed'];
             }else{
                 resetGame();
