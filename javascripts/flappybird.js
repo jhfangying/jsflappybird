@@ -122,6 +122,7 @@ var FlappyBird = function(canvas) {
         calculateObstacle(_timespan);
         calculateGroundGrass(_timespan);
         calculateYun(_timespan);
+        // calculateJiFen(_timespan);
         resetCanvas();
         drawCanvas();
         window.requestAnimationFrame(_render);
@@ -298,7 +299,7 @@ var FlappyBird = function(canvas) {
             _first_canvas_context.fillStyle = "#000";
             _first_canvas_context.font = "italic 16px sans-serif";
             _first_canvas_context.textBaseline = "top";
-            _first_canvas_context.fillText("点击开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
+            _first_canvas_context.fillText("按空格键开始游戏", config['container']['width']*0.4, config['container']['height']*0.4);
         }
     }
     //画障碍物
@@ -329,14 +330,15 @@ var FlappyBird = function(canvas) {
     var drawBird = function() {
         var pos_area=[_bird['x'], _bird['y'], config['bird']['width'], config['bird']['height']];
         if (_isdead == 1) {
-            drawResource(_first_canvas_context,_source_image,config['bird']['area'][0],pos_area);
+            drawResource(_first_canvas_context,_source_image,config['bird']['area'][1],pos_area);
             return;
         }
         var time = new Date();
+        var area=_v>0?config['bird']['area'][1]:config['bird']['area'][0];
         if (time.getMilliseconds() % 500 < 250) {
-            drawResource(_first_canvas_context,_source_image,config['bird']['area'][0],pos_area);
+            drawResource(_first_canvas_context,_source_image,area,pos_area);
         } else {
-            drawResource(_first_canvas_context,_source_image,config['bird']['area'][1],pos_area);
+            drawResource(_first_canvas_context,_source_image,area,pos_area);
         }
     };
 
@@ -348,6 +350,9 @@ var FlappyBird = function(canvas) {
         $('#'+config['container']['id']).on('tap', function(event) {
             if(_isready==2)_isready=1;
             if (_isdead != 1){
+                var media=document.getElementById('flap_sound');
+                media.currentTime = 0;
+                media.play();
                 _v = config['bird']['upspeed'];
             }else{
                 resetGame();
