@@ -43,6 +43,9 @@
 <script type="text/javascript">
 $(document).ready(function(){
   var flappybird=new FlappyBird('flappybird');
+  var media=document.getElementById('bg_music');
+  media.volume=0.2;
+  media.play();
 });
 </script>
 <audio id='bg_music' autoplay="true">
