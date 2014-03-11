@@ -118,9 +118,7 @@ var FlappyBird = function(canvas) {
         var imagenum=3;
         var i=0;
         var loadimage=function(){
-            if(this.complete==true){
-                i++;
-            }
+            i++;
             if(i==imagenum){
                 _render();
             }
@@ -238,7 +236,7 @@ var FlappyBird = function(canvas) {
     //检查鸟的状态，有没有碰上柱子或者地板
     var checkBirdState=function(){
         for(var i=0,l=_obstacle.length;i<l;i++){
-            if(_obstacle[i]['x']<=_bird['x']+config['bird']['width'] && _obstacle[i]['x']+config['obstacle']['width']>_bird['x']){
+            if(_obstacle[i]['x']<=_bird['x']+config['bird']['width'] && _obstacle[i]['x']+getAbsoluteWidthUnit(config['obstacle']['width']) >_bird['x']){
                 if(_bird['y']<=_obstacle[i]['y'] || _bird['y']+config['bird']['height']>=_obstacle[i]['y']+getAbsoluteHeightUnit(config['obstacle']['safearea_height'])){
                     _isdead=1;
                     return;
