@@ -118,7 +118,9 @@ var FlappyBird = function(canvas) {
         var imagenum=3;
         var i=0;
         var loadimage=function(){
-            i++;
+            if(this.complete==true){
+                i++;
+            }
             if(i==imagenum){
                 _render();
             }
