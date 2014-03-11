@@ -112,6 +112,24 @@ var FlappyBird = function(canvas) {
    
     //鸟
     var _bird = {'x': getAbsoluteWidthUnit(config['bird']['origin_pos'][0]) , 'y': getAbsoluteHeightUnit(config['bird']['origin_pos'][1])};
+
+    var _preload=function(){
+        //资源图片
+        var imagenum=3;
+        var i=0;
+        var loadimage=function(){
+            i++;
+            if(i==imagenum){
+                _render();
+            }
+        };
+        _source_image.src=config['canvas']['resource'];
+        _sky_image.src=config['sky']['image'];
+        _obstacle_image.src=config['obstacle']['image'];
+        _source_image.onload=loadimage
+        _sky_image.onload=loadimage
+        _obstacle_image.onload=loadimage
+    };
     //显示画布内容
     var _render = function() {
         var now = new Date();
@@ -378,10 +396,7 @@ var FlappyBird = function(canvas) {
     _ground_canvas=setCanvas(_ground_canvas);
     _sky_canvas=setCanvas(_sky_canvas);
     _yun_canvas=setCanvas(_yun_canvas);
-    //资源图片
-    _source_image.src=config['canvas']['resource'];
-    _sky_image.src=config['sky']['image'];
-    _obstacle_image.src=config['obstacle']['image'];
+    
     
     _flappybird.appendChild(_sky_canvas);
     _flappybird.appendChild(_yun_canvas);
@@ -397,5 +412,5 @@ var FlappyBird = function(canvas) {
     _yun_canvas_context=_yun_canvas.getContext("2d");
 
     bindKey();
-    _render();
+    _preload();
 };
