@@ -29,19 +29,19 @@ var config={
         'maxy':0.5,//百分比
         'safearea_height':0.3,//安全范围的高度，百分比
         'width':0.2,//障碍物宽度，百分比
-        'area':[170,50,50,340],//障碍物在资源图片上的坐标
+        'area':[0,0,60,308],//障碍物在资源图片上的坐标
         'image':'./images/zhuzi.png'
     },
     'ground':{//地面
         'z_distance':1,
-        'area':[10,445,993,144],//地面资源图片上的坐标
+        'area':[0,330,512,150],//地面资源图片上的坐标
     },
     'clound':{//云
         'z_distance':10,
-        'area':[12,103,952,300],//云资源图片上的坐标
+        'area':[0,106,568,184],//云资源图片上的坐标
     },
     'sky':{
-        'image':'./images/tian.jpg'
+        'image':'./images/tian.png'
     }
 };
 var FlappyBird = function(canvas) {
@@ -324,8 +324,8 @@ var FlappyBird = function(canvas) {
     var drawFirstLayoutBackground=function(){
         _obstacle_canvas_context.fillStyle='#000';
         for(var i=0,l=_obstacle.length;i<l;i++){
-            _obstacle_canvas_context.drawImage(_obstacle_image,170,50,50,340, _obstacle[i]['x'],getAbsoluteHeightUnit(config['canvas']['top']),getAbsoluteHeightUnit(config['obstacle']['width']),_obstacle[i]['y']-getAbsoluteHeightUnit(config['canvas']['top']));
-            _obstacle_canvas_context.drawImage(_obstacle_image,170,30,50,340,_obstacle[i]['x'],_obstacle[i]['y']+getAbsoluteHeightUnit(config['obstacle']['safearea_height']) ,getAbsoluteHeightUnit(config['obstacle']['width']),getAbsoluteHeightUnit(config['canvas']['bottom'])-_obstacle[i]['y']+getAbsoluteHeightUnit(config['obstacle']['safearea_height']));
+            _obstacle_canvas_context.drawImage(_obstacle_image,config['obstacle']['area'][0],config['obstacle']['area'][1],config['obstacle']['area'][2],config['obstacle']['area'][3], _obstacle[i]['x'],getAbsoluteHeightUnit(config['canvas']['top']),getAbsoluteHeightUnit(config['obstacle']['width']),_obstacle[i]['y']-getAbsoluteHeightUnit(config['canvas']['top']));
+            _obstacle_canvas_context.drawImage(_obstacle_image,config['obstacle']['area'][0],config['obstacle']['area'][1],config['obstacle']['area'][2],config['obstacle']['area'][3],_obstacle[i]['x'],_obstacle[i]['y']+getAbsoluteHeightUnit(config['obstacle']['safearea_height']) ,getAbsoluteHeightUnit(config['obstacle']['width']),getAbsoluteHeightUnit(config['canvas']['bottom'])-_obstacle[i]['y']+getAbsoluteHeightUnit(config['obstacle']['safearea_height']));
         }
     }
     //画草地
