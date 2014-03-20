@@ -119,6 +119,7 @@ var FlappyBird = function(canvas) {
         var i=0;
         var loadimage=function(){
             i++;
+            _first_canvas_context.font="30px";
             _first_canvas_context.fillText('资源加载中...', config['container']['width']*0.4, 0);
             if(i==imagenum){
                 _render();
